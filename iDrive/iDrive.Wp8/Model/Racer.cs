@@ -119,10 +119,11 @@ namespace iDrive.Model
       await GoAsync();
     }
 
-    async void OnLeftRightDirectionChanged(object sender, RacerLeftRightDirectionChangedEventArgs e)
+    void OnLeftRightDirectionChanged(object sender, RacerLeftRightDirectionChangedEventArgs e)
     {
       LeftRightDirection = e.Direction;
-      await GoAsync();
+      Deployment.Current.Dispatcher.BeginInvoke(async () => await GoAsync());
+      //await GoAsync();
     }
 
     async void OnForwardBackwardDirectionChanged(object sender, RacerForwardBackwardDirectionChangedEventArgs e)
@@ -145,9 +146,6 @@ namespace iDrive.Model
     /// </summary>
     private void SetControlByte()
     {
-
-      //Clamp the speed value between 0 (stopped) and 15 (fastest)
-      int speedvalue = Math.Max(Math.Min(Speed, 15), 0);
 
       int dirvalue = 0;
       string direction = string.Format("{0}{1}", LeftRightDirection.ToString()[0], forwardBackwardDirection.ToString()[0]).ToUpper();
@@ -185,6 +183,10 @@ namespace iDrive.Model
           dirvalue = 0;
           break;
       }
+
+      //Clamp the speed value between 0 (stopped) and 15 (fastest)
+      //If there is no direction, ensure the speed is zero.
+      int speedvalue = (dirvalue != 0) ? Math.Max(Math.Min(Speed, 15), 0) : 0;
 
       dirvalue <<= 4;
 

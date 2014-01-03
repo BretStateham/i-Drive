@@ -27,6 +27,7 @@ namespace iDrive.Model
     void accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
     {
 
+      //Need to figure this out better. 
       var lr = (int)Clamp((int)(args.Reading.AccelerationX * 10),-10,10);
       var fb = (int)Clamp((int)(args.Reading.AccelerationY * 10),-10,10);
 
@@ -35,8 +36,8 @@ namespace iDrive.Model
 
       var lrdir = (RacerLeftRightDirection)lrval;
       var fbdir = (RacerForwardBackwardDirection)fbval;
-      var speedval = (int)Math.Round(Map(Math.Abs(fb), 0, 7.5, 0, 15));
-
+      
+      var speedval = (int)Math.Round(Map(Math.Abs(fb), 0, 10, 0, 15));
 
       //Debug.WriteLine("(x,y,z)=({0:N4},{1:N4},{2:N4})", args.Reading.AccelerationX, args.Reading.AccelerationY, args.Reading.AccelerationZ);
       //Debug.WriteLine("(lr,fb)=({0},{1})", lr, fb);
@@ -50,12 +51,12 @@ namespace iDrive.Model
       if (forwardBackwardDirection != fbdir)
       {
         OnForwardBackwardDirectionChanged(fbdir);
-        //forwardBackwardDirection = fbdir;
+        forwardBackwardDirection = fbdir;
       }
       if (speed != speedval)
       {
         OnSpeedChanged(speedval);
-        //speed = speedval;
+        speed = speedval;
       }
     }    
 
