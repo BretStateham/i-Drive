@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="iDrive.Model.AccelerometerCommandProvider">
+    <Position X="26.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABABAAAAAAgAAAAAAAAAAAAQAAACAAAAgAAAI=</HashCode>
+      <FileName>Model\AccelerometerCommandProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="iDrive.Model.DeviceInfo">
+    <Position X="8.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAEEIAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Model\DeviceInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="iDrive.Model.Racer" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAIIAQAAEAAAABAABABACCRAAAgAQAAACEAAAgAIAA=</HashCode>
+      <FileName>Model\Racer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.023" />
+  </Class>
+  <Class Name="iDrive.Model.RacerCommandProvider">
+    <Position X="26.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIBQIAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAIAA=</HashCode>
+      <FileName>Model\RacerCommandProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="iDrive.Model.RacerForwardBackwardDirectionChangedEventArgs">
+    <Position X="22.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RacerForwardBackwardDirectionChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="iDrive.Model.RacerLeftRightDirectionChangedEventArgs">
+    <Position X="20.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RacerLeftRightDirectionChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="iDrive.Model.RacerLeftRightDirectionToRotationConverter" BaseTypeListCollapsed="true">
+    <Position X="24.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RacerLeftRightDirectionToRotationConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="iDrive.Model.RacerSpeedChangedEventArgs">
+    <Position X="19" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RacerSpeedChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GalaSoft.MvvmLight.ObservableObject">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.EventArgs">
+    <Position X="20.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="iDrive.Wp8.Design.DesignDataService">
+    <Position X="3.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Design\DesignDataService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="iDrive.Wp8.Service.DataService" BaseTypeListCollapsed="true">
+    <Position X="1.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Service\DataService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="iDrive.Wp8.ViewModel.MainViewModel">
+    <Position X="6.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUEAAAkCAACEAEAAAAIAAAACUAAgAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="iDrive.Wp8.ViewModel.ViewModelLocator">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ViewModelLocator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GalaSoft.MvvmLight.ViewModelBase">
+    <Position X="6.25" Y="5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="iDrive.Wp8.View.MainView">
+    <Position X="14.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAQAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>View\MainView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="iDrive.Model.IRacer">
+    <Position X="12.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAIAAAAAAAAAABAAAAAACCRAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\IRacer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="iDrive.Model.IRacerCommandProvider">
+    <Position X="26.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAIAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Model\IRacerCommandProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="iDrive.Service.IDataService">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Service\IDataService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="iDrive.Service.IDialogService">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Service\IDialogService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GalaSoft.MvvmLight.ICleanup">
+    <Position X="4.5" Y="5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Enum Name="iDrive.Model.RacerForwardBackwardDirection">
+    <Position X="24.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAI=</HashCode>
+      <FileName>Model\RacerForwardBackwardDirection.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="iDrive.Model.RacerLeftRightDirection">
+    <Position X="22.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAEAAAA=</HashCode>
+      <FileName>Model\RacerLeftRightDirection.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
