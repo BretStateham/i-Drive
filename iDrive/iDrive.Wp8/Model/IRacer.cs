@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 namespace iDrive.Model
 {
-  public interface IRacer
+  public interface IRacer : IDisposable
   {
 
     event EventHandler<RacerConnectionStateChangedEventArgs> RacerConnectionStateChanged;
@@ -25,7 +25,7 @@ namespace iDrive.Model
 
     Task DisconnectAsync();
 
-    IRacerCommandProvider CommandProvider { get; set; }
+    //IRacerCommandProvider CommandProvider { get; set; }
     
   }
 }

@@ -8,6 +8,17 @@ namespace iDrive.Model
 {
   public class RacerCommandProvider : IRacerCommandProvider
   {
+
+
+    protected IRacer racer;
+
+    public virtual IRacer Racer
+    {
+      get { return racer; }
+      set { racer = value; }
+    }
+    
+
     public event EventHandler<RacerLeftRightDirectionChangedEventArgs> RacerLeftRightDirectionChanged;
 
     public event EventHandler<RacerForwardBackwardDirectionChangedEventArgs> RacerForwardBackwardDirectionChanged;

@@ -9,6 +9,8 @@ namespace iDrive.Model
   public interface IRacerCommandProvider
   {
 
+    IRacer Racer { get; set; }
+
     event EventHandler<RacerLeftRightDirectionChangedEventArgs> RacerLeftRightDirectionChanged;
     event EventHandler<RacerForwardBackwardDirectionChangedEventArgs> RacerForwardBackwardDirectionChanged;
     event EventHandler<RacerSpeedChangedEventArgs> RacerSpeedChanged;

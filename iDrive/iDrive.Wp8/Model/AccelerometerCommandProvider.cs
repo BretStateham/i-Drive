@@ -17,10 +17,16 @@ namespace iDrive.Model
     RacerLeftRightDirection leftRightDirection = RacerLeftRightDirection.None;
     int speed = 0;
 
+
     public AccelerometerCommandProvider()
     {
+      InitAccelerometer();
+    }
+
+    private void InitAccelerometer()
+    {
       accelerometer = Accelerometer.GetDefault();
-      accelerometer.ReportInterval = 20;
+      accelerometer.ReportInterval = 100;
       accelerometer.ReadingChanged += accelerometer_ReadingChanged;
     }
 
@@ -78,6 +84,39 @@ namespace iDrive.Model
       return Clamp(targetValue,TargetMin,TargetMax);
 
       //return (((Value - ValueMin) / (ValueMax - ValueMin)) * (TargetMax - TargetMin)) + TargetMin;
+    }
+
+    protected override void OnLeftRightDirectionChanged(RacerLeftRightDirection Direction)
+    {
+      if (Racer != null && Racer.IsConnected)
+      {
+        Racer.LeftRightDirection = Direction;
+        Racer.GoAsync();
+      }
+
+      base.OnLeftRightDirectionChanged(Direction);
+    }
+
+    protected override void OnForwardBackwardDirectionChanged(RacerForwardBackwardDirection Direction)
+    {
+      if (Racer != null && Racer.IsConnected)
+      {
+        Racer.ForwardBackwardDirection = Direction;
+        Racer.GoAsync();
+      }
+
+      base.OnForwardBackwardDirectionChanged(Direction);
+    }
+
+    protected override void OnSpeedChanged(int Speed)
+    {
+      if (Racer != null && Racer.IsConnected)
+      {
+        Racer.Speed = Speed;
+        Racer.GoAsync();
+      }
+
+      base.OnSpeedChanged(Speed);
     }
 
   }

@@ -15,10 +15,8 @@ using Windows.Storage.Streams;
 namespace iDrive.Model
 {
 
-  public class Racer : ObservableObject, IDisposable, IRacer
+  public class Racer : ObservableObject, IRacer
   {
-
-    public event EventHandler<RacerConnectionStateChangedEventArgs> RacerConnectionStateChanged;
 
     StreamSocket streamSocket = null;
     DataWriter dataWriter = null;
@@ -26,21 +24,6 @@ namespace iDrive.Model
     public bool IsConnected
     {
       get { return streamSocket != null && dataWriter != null; }
-    }
-
-    //public Racer(StreamSocket StreamSocket)
-    //{
-    //  if (StreamSocket != null)
-    //  {
-    //    this.streamSocket = StreamSocket;
-    //    dataWriter = new DataWriter(streamSocket.OutputStream);
-    //    RaisePropertyChanged("IsConnected");
-    //  }
-    //}
-
-    public Racer()
-    {
-
     }
 
     private int speed;
@@ -96,66 +79,30 @@ namespace iDrive.Model
       set
       { Set(ref controlByte, value); }
     }
-
-    private IRacerCommandProvider commandProvider;
-    public IRacerCommandProvider CommandProvider
-    {
-      get { return commandProvider; }
-      set
-      {
-        //unsubscribe from events
-        if (commandProvider != null)
-        {
-          commandProvider.RacerForwardBackwardDirectionChanged -= OnForwardBackwardDirectionChanged;
-          commandProvider.RacerLeftRightDirectionChanged -= OnLeftRightDirectionChanged;
-          commandProvider.RacerSpeedChanged -= OnSpeedChanged;
-          commandProvider = null;
-        }
-
-        if (value != null)
-        {
-          commandProvider = value;
-          commandProvider.RacerForwardBackwardDirectionChanged += OnForwardBackwardDirectionChanged;
-          commandProvider.RacerLeftRightDirectionChanged += OnLeftRightDirectionChanged;
-          commandProvider.RacerSpeedChanged += OnSpeedChanged;
-        }
-      }
-    }
-
-    async void OnSpeedChanged(object sender, RacerSpeedChangedEventArgs e)
-    {
-      Speed = e.Speed;
-      await GoAsync();
-    }
-
-    void OnLeftRightDirectionChanged(object sender, RacerLeftRightDirectionChangedEventArgs e)
-    {
-      LeftRightDirection = e.Direction;
-      Deployment.Current.Dispatcher.BeginInvoke(async () => await GoAsync());
-      //await GoAsync();
-    }
-
-    async void OnForwardBackwardDirectionChanged(object sender, RacerForwardBackwardDirectionChangedEventArgs e)
-    {
-      ForwardBackwardDirection = e.Direction;
-      await GoAsync();
-    }
-
     public async Task GoAsync()
     {
       if (IsConnected)
       {
-        dataWriter.WriteByte(ControlByte);
-        await dataWriter.StoreAsync();
+        //Send all control commands on the UI Thread.  
+        //This helps prevent Invalid Cross-Thread Access exceptions
+        //When binding the racer to the UI.
+        Deployment.Current.Dispatcher.BeginInvoke(async () =>
+          {
+            dataWriter.WriteByte(ControlByte);
+            await dataWriter.StoreAsync();
+          });
       }
     }
 
     public async Task StopAsync()
     {
-      LeftRightDirection = RacerLeftRightDirection.None;
-      ForwardBackwardDirection = RacerForwardBackwardDirection.None;
-      Speed = 0;
-      await GoAsync();
+      if (IsConnected)
+      {
+        LeftRightDirection = RacerLeftRightDirection.None;
+        ForwardBackwardDirection = RacerForwardBackwardDirection.None;
+        Speed = 0;
+        await GoAsync();
+      }
     }
 
     /// <summary>
@@ -210,6 +157,25 @@ namespace iDrive.Model
       ControlByte = (byte)(dirvalue | speedvalue);
     }
 
+    #region Connection Management
+
+    public event EventHandler<RacerConnectionStateChangedEventArgs> RacerConnectionStateChanged;
+		
+    private void CloseConnection()
+    {
+      if (dataWriter != null)
+      {
+        dataWriter.Dispose();
+        dataWriter = null;
+      }
+
+      if (streamSocket != null)
+      {
+        streamSocket.Dispose();
+        streamSocket = null;
+      }
+    }
+
     public async Task ConnectAsync(DeviceInfo RacerDevice)
     {
       try
@@ -219,7 +185,7 @@ namespace iDrive.Model
 
         //If the socket is already in use, dispose of it
         if (streamSocket != null || dataWriter != null)
-          DisposeSocket();
+          CloseConnection();
 
         //Create a new socket
         streamSocket = new StreamSocket();
@@ -231,7 +197,7 @@ namespace iDrive.Model
       catch(Exception ex)
       {
         //Dispose and Destroy the StreamSocket and DataWriter
-        DisposeSocket();
+        CloseConnection();
 
         //Not sure what to do here yet, just pass it along
         throw;
@@ -248,7 +214,7 @@ namespace iDrive.Model
       try
       {
         if (IsConnected)
-          DisposeSocket();
+          CloseConnection();
       }
       catch
       {
@@ -270,6 +236,57 @@ namespace iDrive.Model
       RaisePropertyChanged("IsConnected");
     }
 
+
+    #endregion Connection Management
+
+    #region IRacerCommandProvider Implementation
+
+    //private IRacerCommandProvider commandProvider;
+    //public IRacerCommandProvider CommandProvider
+    //{
+    //  get { return commandProvider; }
+    //  set
+    //  {
+    //    //unsubscribe from events
+    //    if (commandProvider != null)
+    //    {
+    //      commandProvider.RacerForwardBackwardDirectionChanged -= OnForwardBackwardDirectionChanged;
+    //      commandProvider.RacerLeftRightDirectionChanged -= OnLeftRightDirectionChanged;
+    //      commandProvider.RacerSpeedChanged -= OnSpeedChanged;
+    //      commandProvider = null;
+    //    }
+
+    //    if (value != null)
+    //    {
+    //      commandProvider = value;
+    //      commandProvider.RacerForwardBackwardDirectionChanged += OnForwardBackwardDirectionChanged;
+    //      commandProvider.RacerLeftRightDirectionChanged += OnLeftRightDirectionChanged;
+    //      commandProvider.RacerSpeedChanged += OnSpeedChanged;
+    //    }
+    //  }
+    //}
+
+    //async void OnSpeedChanged(object sender, RacerSpeedChangedEventArgs e)
+    //{
+    //  Speed = e.Speed;
+    //  await GoAsync();
+    //}
+
+    //void OnLeftRightDirectionChanged(object sender, RacerLeftRightDirectionChangedEventArgs e)
+    //{
+    //  LeftRightDirection = e.Direction;
+    //  Deployment.Current.Dispatcher.BeginInvoke(async () => await GoAsync());
+    //  //await GoAsync();
+    //}
+
+    //async void OnForwardBackwardDirectionChanged(object sender, RacerForwardBackwardDirectionChangedEventArgs e)
+    //{
+    //  ForwardBackwardDirection = e.Direction;
+    //  await GoAsync();
+    //}
+
+    #endregion IRacerCommandProvider Implementation
+
     #region IDisposable Implementation
     ~Racer()
     {
@@ -286,22 +303,7 @@ namespace iDrive.Model
     {
       if (disposing)
       {
-        DisposeSocket();
-      }
-    }
-
-    private void DisposeSocket()
-    {
-      if (dataWriter != null)
-      {
-        dataWriter.Dispose();
-        dataWriter = null;
-      }
-
-      if (streamSocket != null)
-      {
-        streamSocket.Dispose();
-        streamSocket = null;
+        CloseConnection();
       }
     }
 

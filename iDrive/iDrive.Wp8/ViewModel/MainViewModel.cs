@@ -17,6 +17,8 @@ namespace iDrive.Wp8.ViewModel
   public class MainViewModel : ViewModelBase
   {
 
+    private AccelerometerCommandProvider accelerometerCommandProvider;
+
     public RelayCommand ConnectCommand { get; set; }
 
     public RelayCommand DisconnectCommand { get; set; }
@@ -88,31 +90,23 @@ namespace iDrive.Wp8.ViewModel
       {
         if (racerDeviceInfo != null)
         {
-          ////First connect to the bluetooth device...
-          //HostName deviceHost = new HostName(racerDeviceInfo.HostName);
+          //Get rid of the command provider
+          if (accelerometerCommandProvider != null)
+            accelerometerCommandProvider = null;
 
-          ////If the socket is already in use, dispose of it
-          //if (socket != null)
-          //  socket.Dispose();
+          //Dispose of the Racer and destory it if it exists...
+          DestroyRacer();
 
-          ////Create a new socket
-          //socket = new StreamSocket();
-          //await socket.ConnectAsync(deviceHost, "1");
-
-          //this.Racer = new Racer(socket);
-
-          //AccelerometerCommandProvider provider = new AccelerometerCommandProvider();
-          //Racer.CommandProvider = provider;
-
-          //Dispose ofthe Racer if it is disposable, and destory it...
-          DisposeRacer();
-
+          //Create a new Racer...
           this.Racer = new Racer();
 
+          //Connect it to the selected device
           await this.Racer.ConnectAsync(racerDeviceInfo);
 
-          this.Racer.CommandProvider = new AccelerometerCommandProvider();
-
+          //Assign the AccelerometerCommandProvider to control it
+          //this.Racer.CommandProvider = new AccelerometerCommandProvider();
+          accelerometerCommandProvider = new AccelerometerCommandProvider();
+          accelerometerCommandProvider.Racer = this.Racer;
         }
       }
       catch (Exception ex)
@@ -126,11 +120,11 @@ namespace iDrive.Wp8.ViewModel
       }
     }
 
-    private void DisposeRacer()
+    private void DestroyRacer()
     {
-      if (this.Racer != null && this.Racer is IDisposable)
+      if (this.Racer != null)
       {
-        ((IDisposable)Racer).Dispose();
+        Racer.Dispose();
         this.Racer = null;
       }
     }
@@ -139,22 +133,16 @@ namespace iDrive.Wp8.ViewModel
     {
       try
       {
-        if (Racer != null && Racer.IsConnected)
+        if (Racer != null)
         {
           //Stop the car just in case it is still running
           await Racer.StopAsync();
 
           await Racer.DisconnectAsync();
 
-          //Dispose ofthe Racer if it is disposable, and destory it...
-          DisposeRacer();
+          //Dispose ofthe Racer and destory it...
+          DestroyRacer();
         }
-        ////Dispose of the socket...
-        //socket.Dispose();
-        //socket = null;
-
-        ////Kill the iRacer
-        //Racer = null;
       }
       catch (Exception ex)
       {
@@ -167,9 +155,12 @@ namespace iDrive.Wp8.ViewModel
       }
     }
 
+    /// <summary>
+    /// This is just a test method to perform a go operation without having to have a command provider.
+    /// </summary>
     private void Go()
     {
-      if (racer != null && racer.IsConnected)
+      if (this.Racer != null)
       {
         racer.ControlByte = 0x1F;
         racer.GoAsync();
