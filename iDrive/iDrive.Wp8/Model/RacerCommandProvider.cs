@@ -43,5 +43,28 @@ namespace iDrive.Model
         RacerSpeedChanged(this, new RacerSpeedChangedEventArgs(Speed));
     }
 
+    #region IDisposable Implementation
+
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    ~RacerCommandProvider()
+    {
+      Dispose(false);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if(disposing)
+      {
+
+      }
+    }
+
+    #endregion IDisposable Implementation
+
   }
 }

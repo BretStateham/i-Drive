@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace iDrive.Model
 {
-  public interface IRacerCommandProvider
+  public interface IRacerCommandProvider: IDisposable
   {
 
     IRacer Racer { get; set; }

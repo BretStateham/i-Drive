@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using iDrive.Model;
 using iDrive.Service;
 using Microsoft.Practices.ServiceLocation;
@@ -54,10 +55,34 @@ namespace iDrive.Wp8.ViewModel
       get { return racer; }
       set
       {
-        Set(ref racer, value);
-        DisconnectCommand.RaiseCanExecuteChanged();
-        GoCommand.RaiseCanExecuteChanged();
+        if (racer != value)
+        {
+          //Delete the existing racer if it exists....
+          if (racer != null)
+            DestroyRacer();
+
+          //Assign the field to the new value (if there is one)...
+          //And subscribe to it's OnRacerConnectionStateChanged event....
+          if (value != null)
+          {
+            racer = value;
+            racer.RacerConnectionStateChanged += OnRacerConnectionStateChanged;
+          }
+
+          //Manually raise the INotifyPropertyChanged PropertyChanged event...
+          RaisePropertyChanged("Racer");
+
+          //Rase CanExecuteChangedEvents...
+          DisconnectCommand.RaiseCanExecuteChanged();
+          GoCommand.RaiseCanExecuteChanged();
+        }
       }
+    }
+
+    void OnRacerConnectionStateChanged(object sender, RacerConnectionStateChangedEventArgs e)
+    {
+      ConnectionStatusMessage connectionMsg = new ConnectionStatusMessage(e.IsConnected);
+      Messenger.Default.Send<ConnectionStatusMessage>(connectionMsg);
     }
 
     public MainViewModel()
@@ -72,6 +97,24 @@ namespace iDrive.Wp8.ViewModel
       GoCommand = new RelayCommand(Go, () => racer != null && racer.IsConnected);
 
       PopulateDevices();
+
+      RegisterMessages();
+    }
+
+    private void RegisterMessages()
+    {
+      Messenger.Default.Register<OrientationChangedMessage>(this, HandleOrientationChanged);
+    }
+
+    private void UnregisterMessages()
+    {
+      Messenger.Default.Unregister<OrientationChangedMessage>(this);
+    }
+
+    private void HandleOrientationChanged(OrientationChangedMessage Message)
+    {
+      if (accelerometerCommandProvider != null)
+        accelerometerCommandProvider.Orientation = Message.Orientation;
     }
 
     private async void PopulateDevices()
@@ -83,6 +126,29 @@ namespace iDrive.Wp8.ViewModel
         Devices = devs;
       }
     }
+
+    private void DestroyRacer()
+    {
+      //To prevent an infinite loop, 
+      //make sure to work with the racer field, not the Racer property
+      
+      if (this.racer != null)
+      {
+        //Unsubscribe from the RacerConnectionStateChanged event...
+        racer.RacerConnectionStateChanged -= OnRacerConnectionStateChanged;
+
+        Racer.Dispose();
+        this.racer = null;
+
+        //Get rid of the accelerometerCommandProvider;
+        accelerometerCommandProvider.Dispose();
+        accelerometerCommandProvider = null;
+
+        GoCommand.RaiseCanExecuteChanged();
+        DisconnectCommand.RaiseCanExecuteChanged();
+      }
+    }
+
 
     private async void ConnectToiRacer()
     {
@@ -114,19 +180,7 @@ namespace iDrive.Wp8.ViewModel
         string message = string.Format("An {0} occurred when trying to connect: {1}", ex.GetType().Name, ex.Message);
         ShowMessage(message);
       }
-      finally
-      {
-        GoCommand.RaiseCanExecuteChanged();
-      }
-    }
 
-    private void DestroyRacer()
-    {
-      if (this.Racer != null)
-      {
-        Racer.Dispose();
-        this.Racer = null;
-      }
     }
 
     private async void DisconnectFromiRacer()
@@ -148,10 +202,6 @@ namespace iDrive.Wp8.ViewModel
       {
         string message = string.Format("An {0} occurred when trying to dis-connect: {1}", ex.GetType().Name, ex.Message);
         ShowMessage(message);
-      }
-      finally
-      {
-        GoCommand.RaiseCanExecuteChanged();
       }
     }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Phone.Controls;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,7 +18,6 @@ namespace iDrive.Model
     RacerLeftRightDirection leftRightDirection = RacerLeftRightDirection.None;
     int speed = 0;
 
-
     public AccelerometerCommandProvider()
     {
       InitAccelerometer();
@@ -26,16 +26,59 @@ namespace iDrive.Model
     private void InitAccelerometer()
     {
       accelerometer = Accelerometer.GetDefault();
-      accelerometer.ReportInterval = 100;
+      accelerometer.ReportInterval = 50; //milliseconds: 50 = 20 times per second, 100 = 10 times per second.
       accelerometer.ReadingChanged += accelerometer_ReadingChanged;
     }
 
+    protected override void Dispose(bool disposing)
+    {
+      if(disposing)
+      {
+        StopListening();
+      }
+      base.Dispose(disposing);
+    }
+
+    public void StopListening()
+    {
+      if(accelerometer != null)
+        accelerometer.ReadingChanged -= accelerometer_ReadingChanged;
+    }
+
+    public PageOrientation Orientation { get; set; }
+
+    private bool IsPortrait()
+    {
+      return (Orientation == PageOrientation.None || Orientation == PageOrientation.Portrait || Orientation == PageOrientation.PortraitDown || Orientation == PageOrientation.PortraitUp);
+    }
+    
     void accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
     {
 
+      double accelLR;
+      double accelFB;
+      
+      if(IsPortrait())
+      {
+        accelLR = args.Reading.AccelerationX;
+        accelFB = args.Reading.AccelerationY;
+      }
+      else
+      {
+        accelLR = args.Reading.AccelerationY;
+        accelFB = args.Reading.AccelerationX;
+      }
+
+      double polarityLR = (Orientation == PageOrientation.None || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.LandscapeRight) ? +1 : -1;
+
+      double polarityFB = (Orientation == PageOrientation.None || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.LandscapeLeft) ? +1 : -1;
+
+      
+
+
       //Need to figure this out better. 
-      var lr = (int)Clamp((int)(args.Reading.AccelerationX * 10),-10,10);
-      var fb = (int)Clamp((int)(args.Reading.AccelerationY * 10),-10,10);
+      var lr = (int)Clamp((int)(accelLR * polarityLR * 10),-10,10);
+      var fb = (int)Clamp((int)(accelFB * polarityFB * 10),-10,10);
 
       var lrval = Math.Round(Map(lr, -3, 3, -1, 1));
       var fbval = Math.Round(Map(fb, -3, 3, -1, 1));
@@ -43,7 +86,7 @@ namespace iDrive.Model
       var lrdir = (RacerLeftRightDirection)lrval;
       var fbdir = (RacerForwardBackwardDirection)fbval;
       
-      var speedval = (int)Math.Round(Map(Math.Abs(fb), 0, 10, 0, 15));
+      var speedval = (int)Math.Round(Map(Math.Abs(fb), 0, 7, 0, 15));
 
       //Debug.WriteLine("(x,y,z)=({0:N4},{1:N4},{2:N4})", args.Reading.AccelerationX, args.Reading.AccelerationY, args.Reading.AccelerationZ);
       //Debug.WriteLine("(lr,fb)=({0},{1})", lr, fb);

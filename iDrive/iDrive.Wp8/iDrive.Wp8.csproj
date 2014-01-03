@@ -98,9 +98,11 @@
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Model\AccelerometerCommandProvider.cs" />
+    <Compile Include="Model\ConnectionStatusMessage.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\IRacer.cs" />
     <Compile Include="Model\IRacerCommandProvider.cs" />
+    <Compile Include="Model\OrientationChangedMessage.cs" />
     <Compile Include="Model\Racer.cs" />
     <Compile Include="Model\RacerCommandProvider.cs" />
     <Compile Include="Model\RacerConnectionStateChangedEventArgs.cs" />

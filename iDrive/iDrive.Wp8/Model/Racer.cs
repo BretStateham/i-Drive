@@ -18,14 +18,6 @@ namespace iDrive.Model
   public class Racer : ObservableObject, IRacer
   {
 
-    StreamSocket streamSocket = null;
-    DataWriter dataWriter = null;
-
-    public bool IsConnected
-    {
-      get { return streamSocket != null && dataWriter != null; }
-    }
-
     private int speed;
 
     public int Speed
@@ -79,6 +71,7 @@ namespace iDrive.Model
       set
       { Set(ref controlByte, value); }
     }
+
     public async Task GoAsync()
     {
       if (IsConnected)
@@ -88,8 +81,11 @@ namespace iDrive.Model
         //When binding the racer to the UI.
         Deployment.Current.Dispatcher.BeginInvoke(async () =>
           {
-            dataWriter.WriteByte(ControlByte);
-            await dataWriter.StoreAsync();
+            if (dataWriter != null)
+            {
+              dataWriter.WriteByte(ControlByte);
+              await dataWriter.StoreAsync();
+            }
           });
       }
     }
@@ -160,7 +156,15 @@ namespace iDrive.Model
     #region Connection Management
 
     public event EventHandler<RacerConnectionStateChangedEventArgs> RacerConnectionStateChanged;
-		
+
+    StreamSocket streamSocket = null;
+    DataWriter dataWriter = null;
+
+    public bool IsConnected
+    {
+      get { return streamSocket != null && dataWriter != null; }
+    }
+
     private void CloseConnection()
     {
       if (dataWriter != null)
@@ -238,54 +242,6 @@ namespace iDrive.Model
 
 
     #endregion Connection Management
-
-    #region IRacerCommandProvider Implementation
-
-    //private IRacerCommandProvider commandProvider;
-    //public IRacerCommandProvider CommandProvider
-    //{
-    //  get { return commandProvider; }
-    //  set
-    //  {
-    //    //unsubscribe from events
-    //    if (commandProvider != null)
-    //    {
-    //      commandProvider.RacerForwardBackwardDirectionChanged -= OnForwardBackwardDirectionChanged;
-    //      commandProvider.RacerLeftRightDirectionChanged -= OnLeftRightDirectionChanged;
-    //      commandProvider.RacerSpeedChanged -= OnSpeedChanged;
-    //      commandProvider = null;
-    //    }
-
-    //    if (value != null)
-    //    {
-    //      commandProvider = value;
-    //      commandProvider.RacerForwardBackwardDirectionChanged += OnForwardBackwardDirectionChanged;
-    //      commandProvider.RacerLeftRightDirectionChanged += OnLeftRightDirectionChanged;
-    //      commandProvider.RacerSpeedChanged += OnSpeedChanged;
-    //    }
-    //  }
-    //}
-
-    //async void OnSpeedChanged(object sender, RacerSpeedChangedEventArgs e)
-    //{
-    //  Speed = e.Speed;
-    //  await GoAsync();
-    //}
-
-    //void OnLeftRightDirectionChanged(object sender, RacerLeftRightDirectionChangedEventArgs e)
-    //{
-    //  LeftRightDirection = e.Direction;
-    //  Deployment.Current.Dispatcher.BeginInvoke(async () => await GoAsync());
-    //  //await GoAsync();
-    //}
-
-    //async void OnForwardBackwardDirectionChanged(object sender, RacerForwardBackwardDirectionChangedEventArgs e)
-    //{
-    //  ForwardBackwardDirection = e.Direction;
-    //  await GoAsync();
-    //}
-
-    #endregion IRacerCommandProvider Implementation
 
     #region IDisposable Implementation
     ~Racer()

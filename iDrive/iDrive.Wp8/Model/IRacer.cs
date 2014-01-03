@@ -24,8 +24,6 @@ namespace iDrive.Model
     Task ConnectAsync(DeviceInfo RacerDevice);
 
     Task DisconnectAsync();
-
-    //IRacerCommandProvider CommandProvider { get; set; }
     
   }
 }
