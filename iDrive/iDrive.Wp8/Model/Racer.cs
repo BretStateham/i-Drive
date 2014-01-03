@@ -8,30 +8,39 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 
 namespace iDrive.Model
 {
 
-  public class Racer : ObservableObject, IRacer
+  public class Racer : ObservableObject, IDisposable, IRacer
   {
-    StreamSocket socket = null;
+
+    public event EventHandler<RacerConnectionStateChangedEventArgs> RacerConnectionStateChanged;
+
+    StreamSocket streamSocket = null;
     DataWriter dataWriter = null;
 
     public bool IsConnected
     {
-      get { return socket != null && dataWriter != null; }
+      get { return streamSocket != null && dataWriter != null; }
     }
 
-    public Racer(StreamSocket StreamSocket)
+    //public Racer(StreamSocket StreamSocket)
+    //{
+    //  if (StreamSocket != null)
+    //  {
+    //    this.streamSocket = StreamSocket;
+    //    dataWriter = new DataWriter(streamSocket.OutputStream);
+    //    RaisePropertyChanged("IsConnected");
+    //  }
+    //}
+
+    public Racer()
     {
-      if (StreamSocket != null)
-      {
-        this.socket = StreamSocket;
-        dataWriter = new DataWriter(socket.OutputStream);
-        RaisePropertyChanged("IsConnected");
-      }
+
     }
 
     private int speed;
@@ -134,13 +143,21 @@ namespace iDrive.Model
 
     public async Task GoAsync()
     {
-      if (dataWriter != null)
+      if (IsConnected)
       {
         dataWriter.WriteByte(ControlByte);
         await dataWriter.StoreAsync();
       }
-
     }
+
+    public async Task StopAsync()
+    {
+      LeftRightDirection = RacerLeftRightDirection.None;
+      ForwardBackwardDirection = RacerForwardBackwardDirection.None;
+      Speed = 0;
+      await GoAsync();
+    }
+
     /// <summary>
     /// Sets the iRacer Control byte based on the LeftRightDirection and ForwardBackwardDirection property values.  
     /// </summary>
@@ -193,5 +210,101 @@ namespace iDrive.Model
       ControlByte = (byte)(dirvalue | speedvalue);
     }
 
+    public async Task ConnectAsync(DeviceInfo RacerDevice)
+    {
+      try
+      {
+        //First connect to the bluetooth device...
+        HostName deviceHost = new HostName(RacerDevice.HostName);
+
+        //If the socket is already in use, dispose of it
+        if (streamSocket != null || dataWriter != null)
+          DisposeSocket();
+
+        //Create a new socket
+        streamSocket = new StreamSocket();
+        await streamSocket.ConnectAsync(deviceHost, "1");
+
+        dataWriter = new DataWriter(streamSocket.OutputStream);
+        RaisePropertyChanged("IsConnected");
+      }
+      catch(Exception ex)
+      {
+        //Dispose and Destroy the StreamSocket and DataWriter
+        DisposeSocket();
+
+        //Not sure what to do here yet, just pass it along
+        throw;
+      }
+      finally
+      {
+        //Regardless of what happened, let the view know that the connection state likely changed. 
+        RaiseRacerConnectionStateChanged();
+      }
+    }
+
+    public async Task DisconnectAsync()
+    {
+      try
+      {
+        if (IsConnected)
+          DisposeSocket();
+      }
+      catch
+      {
+        throw;
+      }
+      finally
+      {
+        RaiseRacerConnectionStateChanged();
+      }
+    }
+
+    private void RaiseRacerConnectionStateChanged()
+    {
+      //Raise the RacerConnectionStateChangedEvent
+      if (RacerConnectionStateChanged != null)
+        RacerConnectionStateChanged(this, new RacerConnectionStateChangedEventArgs(IsConnected));
+
+      //Also send a INotifyPropertyChanged event notification for the IsConnected property....
+      RaisePropertyChanged("IsConnected");
+    }
+
+    #region IDisposable Implementation
+    ~Racer()
+    {
+      Dispose(false);
+    }
+
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        DisposeSocket();
+      }
+    }
+
+    private void DisposeSocket()
+    {
+      if (dataWriter != null)
+      {
+        dataWriter.Dispose();
+        dataWriter = null;
+      }
+
+      if (streamSocket != null)
+      {
+        streamSocket.Dispose();
+        streamSocket = null;
+      }
+    }
+
+    #endregion IDisposable Implementation
   }
 }

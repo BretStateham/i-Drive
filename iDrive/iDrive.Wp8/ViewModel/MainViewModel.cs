@@ -27,8 +27,6 @@ namespace iDrive.Wp8.ViewModel
 
     private IDataService dataService;
 
-    private StreamSocket socket;
-
     public List<DeviceInfo> Devices
     {
       get { return devices; }
@@ -52,8 +50,8 @@ namespace iDrive.Wp8.ViewModel
     public IRacer Racer
     {
       get { return racer; }
-      set 
-      { 
+      set
+      {
         Set(ref racer, value);
         DisconnectCommand.RaiseCanExecuteChanged();
         GoCommand.RaiseCanExecuteChanged();
@@ -90,21 +88,30 @@ namespace iDrive.Wp8.ViewModel
       {
         if (racerDeviceInfo != null)
         {
-          //First connect to the bluetooth device...
-          HostName deviceHost = new HostName(racerDeviceInfo.HostName);
+          ////First connect to the bluetooth device...
+          //HostName deviceHost = new HostName(racerDeviceInfo.HostName);
 
-          //If the socket is already in use, dispose of it
-          if (socket != null)
-            socket.Dispose();
+          ////If the socket is already in use, dispose of it
+          //if (socket != null)
+          //  socket.Dispose();
 
-          //Create a new socket
-          socket = new StreamSocket();
-          await socket.ConnectAsync(deviceHost, "1");
+          ////Create a new socket
+          //socket = new StreamSocket();
+          //await socket.ConnectAsync(deviceHost, "1");
 
-          this.Racer = new Racer(socket);
+          //this.Racer = new Racer(socket);
 
-          AccelerometerCommandProvider provider = new AccelerometerCommandProvider();
-          Racer.CommandProvider = provider;
+          //AccelerometerCommandProvider provider = new AccelerometerCommandProvider();
+          //Racer.CommandProvider = provider;
+
+          //Dispose ofthe Racer if it is disposable, and destory it...
+          DisposeRacer();
+
+          this.Racer = new Racer();
+
+          await this.Racer.ConnectAsync(racerDeviceInfo);
+
+          this.Racer.CommandProvider = new AccelerometerCommandProvider();
 
         }
       }
@@ -113,33 +120,50 @@ namespace iDrive.Wp8.ViewModel
         string message = string.Format("An {0} occurred when trying to connect: {1}", ex.GetType().Name, ex.Message);
         ShowMessage(message);
       }
+      finally
+      {
+        GoCommand.RaiseCanExecuteChanged();
+      }
+    }
+
+    private void DisposeRacer()
+    {
+      if (this.Racer != null && this.Racer is IDisposable)
+      {
+        ((IDisposable)Racer).Dispose();
+        this.Racer = null;
+      }
     }
 
     private async void DisconnectFromiRacer()
     {
       try
       {
-        if (socket != null)
+        if (Racer != null && Racer.IsConnected)
         {
-          if (Racer.IsConnected)
-          {
-            //Stop the car just in case it is still running
-            Racer.ControlByte = 0;
-            await Racer.GoAsync();
-          }
+          //Stop the car just in case it is still running
+          await Racer.StopAsync();
 
-          //Dispose of the socket...
-          socket.Dispose();
-          socket = null;
+          await Racer.DisconnectAsync();
 
-          //Kill the iRacer
-          Racer = null;
+          //Dispose ofthe Racer if it is disposable, and destory it...
+          DisposeRacer();
         }
+        ////Dispose of the socket...
+        //socket.Dispose();
+        //socket = null;
+
+        ////Kill the iRacer
+        //Racer = null;
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
         string message = string.Format("An {0} occurred when trying to dis-connect: {1}", ex.GetType().Name, ex.Message);
         ShowMessage(message);
+      }
+      finally
+      {
+        GoCommand.RaiseCanExecuteChanged();
       }
     }
 
@@ -147,7 +171,7 @@ namespace iDrive.Wp8.ViewModel
     {
       if (racer != null && racer.IsConnected)
       {
-        //racer.ControlByte = 0x1F;
+        racer.ControlByte = 0x1F;
         racer.GoAsync();
       }
     }

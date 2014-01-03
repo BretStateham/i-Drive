@@ -37,6 +37,7 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -102,6 +103,7 @@
     <Compile Include="Model\IRacerCommandProvider.cs" />
     <Compile Include="Model\Racer.cs" />
     <Compile Include="Model\RacerCommandProvider.cs" />
+    <Compile Include="Model\RacerConnectionStateChangedEventArgs.cs" />
     <Compile Include="Model\RacerForwardBackwardDirectionChangedEventArgs.cs" />
     <Compile Include="Model\RacerForwardBackwardDirection.cs" />
     <Compile Include="Model\RacerLeftRightDirection.cs" />

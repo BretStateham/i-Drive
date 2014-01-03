@@ -5,6 +5,8 @@ namespace iDrive.Model
   public interface IRacer
   {
 
+    event EventHandler<RacerConnectionStateChangedEventArgs> RacerConnectionStateChanged;
+
     bool IsConnected { get; }
 
     int Speed { get; set; }
@@ -16,6 +18,12 @@ namespace iDrive.Model
     byte ControlByte { get; set; }
 
     Task GoAsync();
+
+    Task StopAsync();
+
+    Task ConnectAsync(DeviceInfo RacerDevice);
+
+    Task DisconnectAsync();
 
     IRacerCommandProvider CommandProvider { get; set; }
     
