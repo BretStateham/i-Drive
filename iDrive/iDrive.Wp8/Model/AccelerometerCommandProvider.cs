@@ -73,9 +73,6 @@ namespace iDrive.Model
 
       double polarityFB = (Orientation == PageOrientation.None || Orientation == PageOrientation.PortraitUp || Orientation == PageOrientation.LandscapeLeft) ? +1 : -1;
 
-      
-
-
       //Need to figure this out better. 
       var lr = (int)Clamp((int)(accelLR * polarityLR * 10),-10,10);
       var fb = (int)Clamp((int)(accelFB * polarityFB * 10),-10,10);
@@ -86,7 +83,7 @@ namespace iDrive.Model
       var lrdir = (RacerLeftRightDirection)lrval;
       var fbdir = (RacerForwardBackwardDirection)fbval;
       
-      var speedval = (int)Math.Round(Map(Math.Abs(fb), 0, 7, 0, 15));
+      var speedval = (int)Math.Round(Map(Math.Abs(fb), 0, 6, 0, 15));
 
       //Debug.WriteLine("(x,y,z)=({0:N4},{1:N4},{2:N4})", args.Reading.AccelerationX, args.Reading.AccelerationY, args.Reading.AccelerationZ);
       //Debug.WriteLine("(lr,fb)=({0},{1})", lr, fb);

@@ -10,7 +10,7 @@ namespace iDrive.Wp8.Design
 {
   class DesignDataService : IDataService
   {
-    public async Task<IEnumerable<Model.DeviceInfo>> GetDevicesAsync()
+    public async Task<IEnumerable<DeviceInfo>> GetDevicesAsync()
     {
       List<DeviceInfo> devices = new List<DeviceInfo>
       {

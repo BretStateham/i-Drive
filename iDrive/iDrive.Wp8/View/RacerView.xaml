@@ -13,6 +13,8 @@
   
   <UserControl.Resources>
     <model:RacerLeftRightDirectionToRotationConverter x:Key="RacerLeftRightDirectionToRotationConverter" />
+    <model:RacerForwardBackwardDirectionToVisibilityConverter x:Key="RacerForwardBackwardDirectionToVisibilityConverter" />
+    <model:RacerSpeedToScaleConverter x:Key="RacerSpeedToScaleConverter" />
   </UserControl.Resources>
 
 	<Grid x:Name="LayoutRoot">
@@ -54,35 +56,6 @@
 						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="PowerLED" d:IsOptimized="True"/>
 					</Storyboard>
 				</VisualState>
-			</VisualStateGroup>
-			<VisualStateGroup x:Name="SpeedStates">
-				<VisualState x:Name="NoSpeed">
-					<Storyboard>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed4LED" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed3LED" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed2LED" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed1LED" d:IsOptimized="True"/>
-					</Storyboard>
-				</VisualState>
-				<VisualState x:Name="Speed1">
-					<Storyboard>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed4LED" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed3LED" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed2LED" d:IsOptimized="True"/>
-					</Storyboard>
-				</VisualState>
-				<VisualState x:Name="Speed2">
-					<Storyboard>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed4LED" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed3LED" d:IsOptimized="True"/>
-					</Storyboard>
-				</VisualState>
-				<VisualState x:Name="Speed3">
-					<Storyboard>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Speed4LED" d:IsOptimized="True"/>
-					</Storyboard>
-				</VisualState>
-				<VisualState x:Name="Speed4"/>
 			</VisualStateGroup>
 			<VisualStateGroup x:Name="TurningStates">
 				<VisualState x:Name="NotTurning"/>
@@ -133,18 +106,26 @@
 				<Rectangle x:Name="WheelRearLeft" Canvas.Left="14" Canvas.Top="323" Width="33" Height="104" RadiusX="11.7832" RadiusY="11.767802" StrokeThickness="1" StrokeMiterLimit="4" Stroke="#FF999999"/>
 				<Rectangle x:Name="WheelRearRight" Canvas.Left="268" Canvas.Top="323" Width="33" Height="104" RadiusX="11.7832" RadiusY="11.767802" StrokeThickness="1" StrokeMiterLimit="4" Stroke="#FF999999"/>
 				<Rectangle x:Name="BreathingLED" Canvas.Left="93" Canvas.Top="215" Width="36" Height="12" Fill="#FF5599FF"/>
-				<Rectangle x:Name="Speed4LED" Canvas.Left="93" Canvas.Top="236" Width="36" Height="12" Fill="#FF00FF00"/>
-				<Rectangle x:Name="Speed3LED" Canvas.Left="93" Canvas.Top="257" Width="36" Height="12" Fill="#FF00FF00"/>
-				<Rectangle x:Name="Speed2LED" Canvas.Left="93" Canvas.Top="278" Width="36" Height="12" Fill="#FF00FF00"/>
-				<Rectangle x:Name="Speed1LED" Canvas.Left="93" Canvas.Top="299" Width="36" Height="12" Fill="#FF00FF00"/>
+				<!-- <Path x:Name="SpeedLEDs" Data="M0,63 L36,63 L36,75 L0,75 z M0,42 L36,42 L36,54 L0,54 z M0,21 L36,21 L36,33 L0,33 z M0,0 L36,0 L36,12 L0,12 z" Fill="#FF00FF00" Height="75" Canvas.Left="93" Stretch="Fill" Canvas.Top="236" UseLayoutRounding="False" Width="36" /> -->
+			    <Canvas x:Name="SpeedCanvas" Canvas.Left="93" Canvas.Top="236" Width="36" Height="75">
+					<Canvas.Clip>
+						<GeometryGroup FillRule="Nonzero">
+							<RectangleGeometry Rect="0,0,36,12"  />
+							<RectangleGeometry Rect="0,21,36,12"  />
+							<RectangleGeometry Rect="0,42,36,12"  />
+							<RectangleGeometry Rect="0,63,36,12"  />
+						</GeometryGroup>
+					</Canvas.Clip>
+					<Rectangle x:Name="SpeedFill" Width="36" Height="75" Fill="#FF00FF00" RenderTransformOrigin="0.5,1.0">
+						<Rectangle.RenderTransform>
+							<CompositeTransform ScaleY="{Binding Speed, Converter={StaticResource RacerSpeedToScaleConverter}, ConverterParameter=15, FallbackValue=0}" />
+						</Rectangle.RenderTransform>
+					</Rectangle>
+				</Canvas>
 				<Rectangle x:Name="ConnectionLED" Canvas.Left="189" Canvas.Top="215" Width="36" Height="12" Fill="#FF5599FF"/>
 				<Rectangle x:Name="PowerLED" Canvas.Left="189" Canvas.Top="236" Width="36" Height="12" Fill="#FFD42AFF"/>
-				<Path x:Name="ForwardArrows" Height="68" Canvas.Left="15.375" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" StrokeThickness="1" StrokeLineJoin="Miter" Canvas.Top="341.25" UseLayoutRounding="False" Fill="Lime" Data="M269.125,0 L284.276,15.151 L276.701,15.151 L276.701,68 L261.549,68 L261.549,15.151 L253.974,15.151 z M15.151,0 L30.302,15.151 L22.7265,15.151 L22.7265,68 L7.5755,68 L7.5755,15.151 L0,15.151 z" RenderTransformOrigin="0.053297,0.5" Stretch="Fill" Width="284.276" Opacity="0">
-					<Path.RenderTransform>
-						<CompositeTransform/>
-					</Path.RenderTransform>
-				</Path>
-				<Path x:Name="BackwardsArrows" Height="68" Canvas.Left="15.375" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" StrokeThickness="1" StrokeLineJoin="Miter" Canvas.Top="341.25" UseLayoutRounding="False" Fill="Lime" Data="M269.125,0 L284.276,15.151 L276.701,15.151 L276.701,68 L261.549,68 L261.549,15.151 L253.974,15.151 z M15.151,0 L30.302,15.151 L22.7265,15.151 L22.7265,68 L7.5755,68 L7.5755,15.151 L0,15.151 z" RenderTransformOrigin="0.053297,0.5" Stretch="Fill" Width="284.276" Opacity="0">
+				<Path x:Name="ForwardArrows" Height="68" Canvas.Left="15.375" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" StrokeThickness="1" StrokeLineJoin="Miter" Canvas.Top="341.25" UseLayoutRounding="False" Fill="Lime" Data="M269.125,0 L284.276,15.151 L276.701,15.151 L276.701,68 L261.549,68 L261.549,15.151 L253.974,15.151 z M15.151,0 L30.302,15.151 L22.7265,15.151 L22.7265,68 L7.5755,68 L7.5755,15.151 L0,15.151 z" RenderTransformOrigin="0.053297,0.5" Stretch="Fill" Width="284.276" Visibility="{Binding ForwardBackwardDirection, Converter={StaticResource RacerForwardBackwardDirectionToVisibilityConverter}, ConverterParameter=false, FallbackValue=Collapsed}" />
+        <Path x:Name="BackwardsArrows" Height="68" Canvas.Left="15.375" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" StrokeThickness="1" StrokeLineJoin="Miter" Canvas.Top="341.25" UseLayoutRounding="False" Fill="Red" Data="M269.125,0 L284.276,15.151 L276.701,15.151 L276.701,68 L261.549,68 L261.549,15.151 L253.974,15.151 z M15.151,0 L30.302,15.151 L22.7265,15.151 L22.7265,68 L7.5755,68 L7.5755,15.151 L0,15.151 z" RenderTransformOrigin="0.053297,0.5" Stretch="Fill" Width="284.276" Visibility="{Binding ForwardBackwardDirection, Converter={StaticResource RacerForwardBackwardDirectionToVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}" >
 					<Path.RenderTransform>
 						<CompositeTransform ScaleY="-1"/>
 					</Path.RenderTransform>
