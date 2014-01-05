@@ -24,7 +24,7 @@ namespace iDrive.Wp8.ViewModel
       ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
       //Register the Data Services
-      if (ViewModelBase.IsInDesignModeStatic)
+      if (ViewModelBase.IsInDesignModeStatic || Microsoft.Devices.Environment.DeviceType == Microsoft.Devices.DeviceType.Emulator)
       {
         SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
       }

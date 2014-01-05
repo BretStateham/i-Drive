@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Mock\MockRacer.cs" />
     <Compile Include="Model\AccelerometerCommandProvider.cs" />
     <Compile Include="Model\ConnectionStatusMessage.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Model\IRacerCommandProvider.cs" />
     <Compile Include="Model\OrientationChangedMessage.cs" />
     <Compile Include="Model\Racer.cs" />
+    <Compile Include="Model\RacerBase.cs" />
     <Compile Include="Model\RacerCommandProvider.cs" />
     <Compile Include="Model\RacerConnectionStateChangedEventArgs.cs" />
     <Compile Include="Model\RacerForwardBackwardDirectionChangedEventArgs.cs" />
@@ -201,9 +203,7 @@
       <HintPath>..\packages\Unofficial.Blend.Interactivity.1.0.0\lib\wp8\System.Windows.Interactivity.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mock\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

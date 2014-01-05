@@ -34,5 +34,11 @@ namespace iDrive.Model
       set { Set(ref serviceName, value); }
     }
 
+    public override string ToString()
+    {
+      string deviceInfo = string.Format("DeviceInfo:{0}  Display Name: {1}{0}  Host Name:    {2}{0}  Service Name: {3}", System.Environment.NewLine, DisplayName, HostName, ServiceName);
+      return deviceInfo;
+    }
+
   }
 }

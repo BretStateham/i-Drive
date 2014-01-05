@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Networking.Proximity;
 using Windows.Networking.Sockets;
+using Microsoft.Devices;
 
 namespace iDrive.Wp8.ViewModel
 {
@@ -164,7 +165,13 @@ namespace iDrive.Wp8.ViewModel
           DestroyRacer();
 
           //Create a new Racer...
-          this.Racer = new Racer();
+          //If running on the device, create real racer
+          //Otherwise, (running on the emulator) create a mock racer
+          if (Microsoft.Devices.Environment.DeviceType == DeviceType.Device)
+            this.Racer = new Racer();
+          else
+            this.Racer = new Mock.MockRacer();
+
 
           //Connect it to the selected device
           await this.Racer.ConnectAsync(racerDeviceInfo);
