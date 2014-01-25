@@ -130,6 +130,13 @@
 						<CompositeTransform ScaleY="-1"/>
 					</Path.RenderTransform>
 				</Path>
+        <TextBlock Height="50" TextWrapping="Wrap" Canvas.Top="198" Width="67" FontSize="10" Canvas.Left="10">
+			  <TextBlock.Inlines>
+				<Run Text="R/L: " /><Run Text="{Binding LeftRightDirection}" /><LineBreak />
+				<Run Text="F/B: " /><Run Text="{Binding ForwardBackwardDirection}" /><LineBreak />
+				<Run Text="Spd: " /><Run Text="{Binding Speed}" /><LineBreak />
+			  </TextBlock.Inlines>
+			</TextBlock>
 			</Canvas>
 		</Viewbox>
 
