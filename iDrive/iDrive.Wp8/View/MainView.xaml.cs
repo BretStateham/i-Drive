@@ -12,6 +12,7 @@ using Microsoft.Practices.ServiceLocation;
 using GalaSoft.MvvmLight.Ioc;
 using iDrive.Model;
 using GalaSoft.MvvmLight.Messaging;
+using iDrive.Message;
 
 namespace iDrive.Wp8.View
 {

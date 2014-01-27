@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iDrive.Model
+namespace iDrive.Message
 {
   public class OrientationChangedMessage
   {

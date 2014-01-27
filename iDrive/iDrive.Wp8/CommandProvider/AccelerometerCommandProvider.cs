@@ -1,4 +1,5 @@
-﻿using Microsoft.Phone.Controls;
+﻿using iDrive.Model;
+using Microsoft.Phone.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Sensors;
 
-namespace iDrive.Model
+namespace iDrive.CommandProvider
 {
   public class AccelerometerCommandProvider : RacerCommandProvider
   {

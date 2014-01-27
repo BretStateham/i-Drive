@@ -1,10 +1,11 @@
-﻿using System;
+﻿using iDrive.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iDrive.Model
+namespace iDrive.CommandProvider
 {
   public interface IRacerCommandProvider: IDisposable
   {

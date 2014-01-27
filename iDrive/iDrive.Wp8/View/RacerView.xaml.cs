@@ -13,6 +13,7 @@ using System.Diagnostics;
 using iDrive.Service;
 using Microsoft.Practices.ServiceLocation;
 using GalaSoft.MvvmLight.Messaging;
+using iDrive.Message;
 
 namespace iDrive.Wp8.View
 {

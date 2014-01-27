@@ -13,6 +13,8 @@ using Windows.Networking;
 using Windows.Networking.Proximity;
 using Windows.Networking.Sockets;
 using Microsoft.Devices;
+using iDrive.CommandProvider;
+using iDrive.Message;
 
 namespace iDrive.Wp8.ViewModel
 {
@@ -169,6 +171,7 @@ namespace iDrive.Wp8.ViewModel
           //Otherwise, (running on the emulator) create a mock racer
           if (Microsoft.Devices.Environment.DeviceType == DeviceType.Device)
             this.Racer = new Racer();
+            //this.Racer = new Mock.MockRacer();
           else
             this.Racer = new Mock.MockRacer();
 

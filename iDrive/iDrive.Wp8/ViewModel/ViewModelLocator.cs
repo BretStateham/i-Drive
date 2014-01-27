@@ -23,7 +23,8 @@ namespace iDrive.Wp8.ViewModel
       //And to return an IServiceLocator (ServiceLocator.Current)
       ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-      //Register the Data Services
+      //Register the Data Services.
+      //If we are in DesignMode or if running in the emulator, use the DesignDataService
       if (ViewModelBase.IsInDesignModeStatic || Microsoft.Devices.Environment.DeviceType == Microsoft.Devices.DeviceType.Emulator)
       {
         SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
@@ -31,6 +32,7 @@ namespace iDrive.Wp8.ViewModel
       else
       {
         SimpleIoc.Default.Register<IDataService, DataService>();
+        //SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
       }
 
       //Register the Racer
