@@ -100,21 +100,13 @@
     <Compile Include="Mock\MockRacer.cs" />
     <Compile Include="CommandProvider\AccelerometerCommandProvider.cs" />
     <Compile Include="Message\ConnectionStatusMessage.cs" />
-    <Compile Include="Model\DeviceInfo.cs" />
-    <Compile Include="Model\IRacer.cs" />
     <Compile Include="CommandProvider\IRacerCommandProvider.cs" />
     <Compile Include="Message\OrientationChangedMessage.cs" />
     <Compile Include="Model\Racer.cs" />
-    <Compile Include="Model\RacerBase.cs" />
     <Compile Include="CommandProvider\RacerCommandProvider.cs" />
-    <Compile Include="Model\RacerConnectionStateChangedEventArgs.cs" />
-    <Compile Include="Model\RacerForwardBackwardDirectionChangedEventArgs.cs" />
-    <Compile Include="Model\RacerForwardBackwardDirection.cs" />
+    <Compile Include="Model\RacerBase.cs" />
     <Compile Include="Model\RacerForwardBackwardDirectionToVisibilityConverter.cs" />
-    <Compile Include="Model\RacerLeftRightDirection.cs" />
-    <Compile Include="Model\RacerLeftRightDirectionChangedEventArgs.cs" />
     <Compile Include="Model\RacerLeftRightDirectionToRotationConverter.cs" />
-    <Compile Include="Model\RacerSpeedChangedEventArgs.cs" />
     <Compile Include="Model\RacerSpeedToScaleConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
@@ -203,7 +195,12 @@
       <HintPath>..\packages\Unofficial.Blend.Interactivity.1.0.0\lib\wp8\System.Windows.Interactivity.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\iDrive.Portable\iDrive.Portable.csproj">
+      <Project>{95FCFF94-079E-4518-B5AA-B43FD51951C8}</Project>
+      <Name>iDrive.Portable</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
